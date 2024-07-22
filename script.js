@@ -27,7 +27,7 @@ fs.createReadStream("db.parents.csv")
       .on("end", () => {
         // Convert the merged data to CSV
         const csv = parse(mergedData, {
-          fields: ["id", "parentID", "title", "parent_title"],
+          fields: ["id", "title", "parentID", "parent_title"],
         });
 
         fs.writeFileSync("merged.csv", csv);
