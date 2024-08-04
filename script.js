@@ -26,6 +26,8 @@ fs.createReadStream("db.parents.csv")
           id: row._id,
           parentID: row.parentID,
           title: row.title,
+          isPublished: row.isPublished,
+          contentType: row.contentType,
           parent_title: parentData.title || "",
           parent_categories: parentData.categories || "",
           parent_isPublished: parentData.isPublished || "",
@@ -37,8 +39,10 @@ fs.createReadStream("db.parents.csv")
         const csv = parse(mergedData, {
           fields: [
             "id",
-            "title",
             "parentID",
+            "title",
+            "isPublished",
+            "contentType",
             "parent_title",
             "parent_categories",
             "parent_isPublished",
