@@ -36,7 +36,7 @@ fs.createReadStream("db.parents.csv")
       })
       .on("end", () => {
         // Convert the merged data to CSV
-        const csv = parse(mergedData, {
+        const csvData = parse(mergedData, {
           fields: [
             "id",
             "parentID",
@@ -44,14 +44,59 @@ fs.createReadStream("db.parents.csv")
             "parent_title",
             "isPublished",
             "parent_isPublished",
-            "parent_categories",
             "parent_usingScript",
             "contentType",
+            "parent_categories",
           ],
         });
 
-        fs.writeFileSync("merged.csv", csv);
+        fs.writeFileSync("merged.csv", csvData);
 
         console.log("CSV files merged successfully.");
+
+        // Read the categories CSV into a map for quick lookup
+        const categoriesMap = new Map();
+
+        fs.createReadStream("db.categories.csv")
+          .pipe(csv())
+          .on("data", (row) => {
+            categoriesMap.set(row._id, row.title);
+          })
+          .on("end", () => {
+            // Read the merged CSV file and add the category titles
+            const updatedData = [];
+
+            fs.createReadStream("merged.csv")
+              .pipe(csv())
+              .on("data", (row) => {
+                const categoryTitle =
+                  categoriesMap.get(row.parent_categories) || "";
+                updatedData.push({
+                  ...row,
+                  categories_title: categoryTitle,
+                });
+              })
+              .on("end", () => {
+                // Convert the updated data to CSV
+                const updatedCsv = parse(updatedData, {
+                  fields: [
+                    "id",
+                    "parentID",
+                    "title",
+                    "parent_title",
+                    "isPublished",
+                    "parent_isPublished",
+                    "parent_usingScript",
+                    "contentType",
+                    "parent_categories",
+                    "categories_title",
+                  ],
+                });
+
+                fs.writeFileSync("merged_with_categories.csv", updatedCsv);
+
+                console.log("Categories added to merged CSV successfully.");
+              });
+          });
       });
   });

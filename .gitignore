@@ -2,3 +2,5 @@ db.chapters.csv
 db.parents.csv
 node_modules
 merged.csv
+db.categories.csv
+merged_with_categories.csv
