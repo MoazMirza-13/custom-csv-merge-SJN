@@ -41,12 +41,12 @@ fs.createReadStream("db.parents.csv")
             "id",
             "parentID",
             "title",
-            "isPublished",
-            "contentType",
             "parent_title",
-            "parent_categories",
+            "isPublished",
             "parent_isPublished",
+            "parent_categories",
             "parent_usingScript",
+            "contentType",
           ],
         });
 
